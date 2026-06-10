@@ -1,4 +1,4 @@
-name: Playwright Cucumber Pages
+name: Playwright Pages
 
 on:
   push:
@@ -13,6 +13,10 @@ permissions:
 jobs:
   test-and-deploy:
     runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Descargar código
@@ -29,7 +33,7 @@ jobs:
       - name: Instalar browsers de Playwright
         run: npx playwright install --with-deps
 
-      - name: Ejecutar pruebas formulario
+      - name: Ejecutar pruebas Cucumber 
         run: npm run test:formulario
         env:
           CI: true
@@ -45,5 +49,6 @@ jobs:
           path: reports/html-report
 
       - name: Publicar GitHub Pages
+        id: deployment
         if: always()
         uses: actions/deploy-pages@v4
